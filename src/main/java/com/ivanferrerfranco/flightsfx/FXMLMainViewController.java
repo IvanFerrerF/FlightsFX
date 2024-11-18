@@ -20,40 +20,45 @@ import java.util.Comparator;
 
 /**
  * Controlador principal para la gestión de vuelos en la aplicación FlightsFX.
- * Se encarga de manejar la lógica de la interfaz gráfica y aplicar los filtros requeridos.
+ * Este controlador gestiona la lógica de la interfaz gráfica, incluyendo
+ * la adición, eliminación, filtrado y visualización de vuelos.
  */
 public class FXMLMainViewController {
 
-    // Componentes de la interfaz gráfica (FXML)
+    // Componentes de la interfaz gráfica definidos en el archivo FXML
     @FXML
-    private TableView<Flight> tableFlights;
+    private TableView<Flight> tableFlights; // Tabla que muestra los vuelos
     @FXML
-    private TableColumn<Flight, String> colFlightNumber;
+    private TableColumn<Flight, String> colFlightNumber; // Columna para el número de vuelo
     @FXML
-    private TableColumn<Flight, String> colDestination;
+    private TableColumn<Flight, String> colDestination; // Columna para el destino
     @FXML
-    private TableColumn<Flight, LocalDateTime> colDeparture;
+    private TableColumn<Flight, LocalDateTime> colDeparture; // Columna para la fecha y hora de salida
     @FXML
-    private TableColumn<Flight, LocalTime> colDuration;
+    private TableColumn<Flight, LocalTime> colDuration; // Columna para la duración del vuelo
 
     @FXML
-    private TextField txtFlightNumber;
+    private TextField txtFlightNumber; // Campo de texto para el número de vuelo
     @FXML
-    private TextField txtDestination;
+    private TextField txtDestination; // Campo de texto para el destino
     @FXML
-    private TextField txtDeparture;
+    private TextField txtDeparture; // Campo de texto para la fecha y hora de salida
     @FXML
-    private TextField txtDuration;
+    private TextField txtDuration; // Campo de texto para la duración
 
     @FXML
-    private ChoiceBox<String> choiceFilter;
+    private ChoiceBox<String> choiceFilter; // Menú desplegable para los filtros
 
+    // Lista observable que contiene los vuelos cargados
     private ObservableList<Flight> flights;
+
+    // Referencias al Stage principal y a la escena principal
     private Stage stage;
     private Scene mainScene;
 
     /**
-     * Devuelve la lista completa de vuelos (sin filtrar).
+     * Devuelve la lista completa de vuelos cargados.
+     *
      * @return Lista de vuelos.
      */
     public ObservableList<Flight> getFlights() {
@@ -61,15 +66,19 @@ public class FXMLMainViewController {
     }
 
     /**
-     * Inicializa el controlador, configurando las columnas y cargando los datos iniciales.
+     * Método de inicialización del controlador.
+     * Configura las columnas de la tabla, formatea la fecha de salida
+     * y carga los datos iniciales desde el archivo.
      */
     @FXML
     private void initialize() {
+        // Configurar las columnas de la tabla
         colFlightNumber.setCellValueFactory(new PropertyValueFactory<>("flightNumber"));
         colDestination.setCellValueFactory(new PropertyValueFactory<>("destination"));
         colDeparture.setCellValueFactory(new PropertyValueFactory<>("departureDateTime"));
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
 
+        // Formatear la fecha en la tabla
         colDeparture.setCellFactory(column -> new TableCell<>() {
             private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm");
 
@@ -80,12 +89,17 @@ public class FXMLMainViewController {
             }
         });
 
+        // Cargar los datos iniciales
         flights = FXCollections.observableArrayList(FileUtils.loadFlights());
         tableFlights.setItems(flights);
 
+        // Configurar las opciones del filtro
         updateChoiceBox();
     }
 
+    /**
+     * Actualiza las opciones del filtro en el menú desplegable.
+     */
     private void updateChoiceBox() {
         ObservableList<String> filterOptions = FXCollections.observableArrayList(
                 "Show all flights",
@@ -98,9 +112,14 @@ public class FXMLMainViewController {
         choiceFilter.setValue("Show all flights");
     }
 
+    /**
+     * Agrega un vuelo a la tabla y al archivo.
+     * Valida los campos y muestra mensajes de error si hay problemas.
+     */
     @FXML
     private void addFlight() {
         try {
+            // Validar y obtener los datos del vuelo
             String flightNumber = txtFlightNumber.getText().trim();
             String destination = txtDestination.getText().trim();
             String departureText = txtDeparture.getText().trim();
@@ -114,11 +133,13 @@ public class FXMLMainViewController {
             LocalDateTime departure = LocalDateTime.parse(departureText, DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
             LocalTime duration = LocalTime.parse(durationText, DateTimeFormatter.ofPattern("H:mm"));
 
+            // Crear el vuelo y agregarlo
             Flight newFlight = new Flight(flightNumber, destination, departure, duration);
             flights.add(newFlight);
             FileUtils.saveFlights(flights);
             updateChoiceBox();
 
+            // Limpiar los campos
             txtFlightNumber.clear();
             txtDestination.clear();
             txtDeparture.clear();
@@ -130,6 +151,10 @@ public class FXMLMainViewController {
         }
     }
 
+    /**
+     * Elimina el vuelo seleccionado de la tabla y del archivo.
+     * Muestra un mensaje de error si no se selecciona ningún vuelo.
+     */
     @FXML
     private void deleteFlight() {
         Flight selectedFlight = tableFlights.getSelectionModel().getSelectedItem();
@@ -143,6 +168,11 @@ public class FXMLMainViewController {
         }
     }
 
+    /**
+     * Aplica el filtro seleccionado a la tabla de vuelos.
+     * Los filtros incluyen mostrar todos los vuelos, vuelos largos,
+     * próximos 5 vuelos y promedio de duración.
+     */
     @FXML
     private void applyFilter() {
         String selectedFilter = choiceFilter.getValue();
@@ -170,20 +200,17 @@ public class FXMLMainViewController {
             case "Show next 5 flights":
                 ObservableList<Flight> nextFlights = FXCollections.observableArrayList(
                         flights.stream()
-                                .filter(flight -> flight.getDepartureDateTime().isAfter(LocalDateTime.now())) // Filtrar vuelos futuros
-                                .sorted(Comparator.comparing(Flight::getDepartureDateTime)) // Ordenar por fecha de salida
-                                .limit(5) // Limitar a 5 vuelos
+                                .filter(flight -> flight.getDepartureDateTime().isAfter(LocalDateTime.now()))
+                                .sorted(Comparator.comparing(Flight::getDepartureDateTime))
+                                .limit(5)
                                 .toList()
                 );
-
-                // Validar si hay vuelos futuros
                 if (nextFlights.isEmpty()) {
                     MessageUtils.showError("No hay vuelos próximos disponibles.");
                 } else {
-                    tableFlights.setItems(nextFlights); // Actualizar la tabla con los próximos vuelos
+                    tableFlights.setItems(nextFlights);
                 }
                 break;
-
             case "Show flight duration average":
                 double avgMinutes = flights.stream()
                         .mapToDouble(f -> f.getDuration().getHour() * 60 + f.getDuration().getMinute())
@@ -194,6 +221,9 @@ public class FXMLMainViewController {
         }
     }
 
+    /**
+     * Muestra un gráfico circular con los datos de los vuelos agrupados por destino.
+     */
     @FXML
     private void showChart() {
         try {
@@ -207,6 +237,12 @@ public class FXMLMainViewController {
         }
     }
 
+    /**
+     * Configura el Stage y la escena principal del controlador.
+     *
+     * @param stage      Stage principal.
+     * @param mainScene  Escena principal de la aplicación.
+     */
     public void setStageAndScene(Stage stage, Scene mainScene) {
         this.stage = stage;
         this.mainScene = mainScene;

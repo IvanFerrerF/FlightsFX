@@ -14,33 +14,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase de utilidad para manejar la lectura y escritura de vuelos en un archivo.
+ * Clase de utilidad para manejar la lectura y escritura de datos de vuelos en un archivo.
+ * Proporciona métodos para cargar vuelos desde un archivo y guardar una lista de vuelos en un archivo.
  */
 public class FileUtils {
 
-    private static final String FILE_PATH = "flights.txt"; // Ruta del archivo donde se almacenan los datos de los vuelos.
+    /** Ruta del archivo donde se almacenan los datos de los vuelos. */
+    private static final String FILE_PATH = "flights.txt";
 
     /**
-     * Método para cargar vuelos desde un archivo de texto.
+     * Método para cargar una lista de vuelos desde un archivo de texto.
+     * Cada línea del archivo debe estar en el formato: `FlightNumber;Destination;DepartureDateTime;Duration`.
      *
-     * @return Una lista de objetos Flight cargados desde el archivo.
+     * @return Una lista de objetos {@link Flight} cargados desde el archivo. Si el archivo no existe
+     * o no se puede leer, se devuelve una lista vacía.
      */
     public static List<Flight> loadFlights() {
-        List<Flight> flights = new ArrayList<>(); // Lista para almacenar los vuelos.
+        // Lista para almacenar los vuelos cargados desde el archivo.
+        List<Flight> flights = new ArrayList<>();
 
         try {
-            // Leer todas las líneas del archivo y filtrar las líneas vacías.
+            // Leer todas las líneas del archivo y omitir las líneas vacías o incorrectas.
             List<String> lines = Files.readAllLines(Paths.get(FILE_PATH))
                     .stream()
                     .skip(1) // Omitir la cabecera del archivo (la primera línea).
                     .filter(line -> !line.isBlank()) // Ignorar líneas vacías.
                     .toList();
 
-            // Procesar cada línea del archivo.
+            // Procesar cada línea para crear objetos Flight.
             for (String line : lines) {
                 String[] parts = line.split(";"); // Dividir la línea en partes usando el separador ";".
 
-                // Verificar que la línea tenga exactamente 4 campos.
+                // Validar que la línea tenga el número correcto de campos.
                 if (parts.length != 4) {
                     System.out.println("Línea con formato incorrecto: " + line);
                     continue; // Saltar esta línea y continuar con las demás.
@@ -56,21 +61,23 @@ public class FileUtils {
                 flights.add(new Flight(flightNumber, destination, departureDateTime, duration));
             }
         } catch (IOException e) {
-            // Capturar y mostrar cualquier error al leer el archivo.
+            // Capturar y mostrar cualquier error ocurrido al leer el archivo.
             System.out.println("Error al cargar los vuelos: " + e.getMessage());
         }
 
-        return flights; // Devolver la lista de vuelos cargados.
+        // Devolver la lista de vuelos cargados.
+        return flights;
     }
 
     /**
      * Método para guardar una lista de vuelos en un archivo de texto.
+     * Cada vuelo se guarda como una línea en el archivo en el formato: `FlightNumber;Destination;DepartureDateTime;Duration`.
      *
-     * @param flights Lista de objetos Flight a guardar en el archivo.
+     * @param flights Lista de objetos {@link Flight} que se guardarán en el archivo.
      */
     public static void saveFlights(List<Flight> flights) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PATH))) {
-            // Escribir la cabecera del archivo.
+            // Escribir la cabecera del archivo para describir los campos.
             writer.println("FlightNumber;Destination;DepartureDateTime;Duration");
 
             // Escribir cada vuelo como una línea en el archivo.
@@ -81,9 +88,8 @@ public class FileUtils {
                         flight.getDuration());
             }
         } catch (IOException e) {
-            // Capturar y mostrar cualquier error al escribir en el archivo.
+            // Capturar y mostrar cualquier error ocurrido al guardar el archivo.
             System.out.println("Error al guardar los vuelos: " + e.getMessage());
         }
     }
-
 }

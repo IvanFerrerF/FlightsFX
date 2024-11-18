@@ -1,10 +1,23 @@
-
-/* Estilo para todos los botones */
+/* Estilo normal del botón */
 .button {
     -fx-background-color: #000000; /* Fondo negro */
     -fx-text-fill: #ffffff;        /* Texto blanco */
-    -fx-font-weight: bold;        /* Opcional: texto en negrita */
-    -fx-border-color: #ffffff;    /* Opcional: borde blanco */
-    -fx-border-width: 2px;        /* Opcional: ancho del borde */
-    -fx-padding: 10px;            /* Opcional: espaciado interno */
+    -fx-font-weight: bold;
+    -fx-border-color: #ffffff;
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;             /* Cambia el cursor a mano al pasar sobre el botón */
+}
+
+/* Estilo cuando el botón está en estado hover */
+.button:hover {
+    -fx-background-color: #333333; /* Fondo gris oscuro */
+    -fx-border-color: #ffcc00;     /* Borde dorado */
+}
+
+/* Estilo cuando el botón está presionado */
+.button:pressed {
+    -fx-background-color: #ffcc00; /* Fondo dorado */
+    -fx-text-fill: #000000;        /* Texto negro */
+    -fx-border-color: #000000;     /* Borde negro */
 }

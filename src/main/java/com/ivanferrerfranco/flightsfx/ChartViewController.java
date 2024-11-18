@@ -13,35 +13,35 @@ import java.util.stream.Collectors;
 /**
  * Controlador para la vista del gráfico circular.
  * Esta clase se encarga de gestionar el comportamiento y la lógica
- * de la vista que muestra un gráfico circular de destinos de vuelos.
+ * de la vista que muestra un gráfico circular con destinos de vuelos agrupados.
  */
 public class ChartViewController {
 
-    // Referencia al componente gráfico PieChart definido en el archivo FXML
+    /** Referencia al componente gráfico PieChart definido en el archivo FXML. */
     @FXML
     private PieChart pieChart;
 
-    // Nodo raíz del archivo FXML
+    /** Nodo raíz del archivo FXML para aplicar configuraciones globales, como estilos CSS. */
     @FXML
     private AnchorPane rootPane;
 
-    // Referencia al Stage actual para realizar configuraciones o cambios en la ventana
+    /** Stage principal de la aplicación donde se carga esta vista. */
     private Stage stage;
 
-    // Lista observable que contiene los datos de los vuelos
+    /** Lista observable que contiene los datos de los vuelos. */
     private ObservableList<Flight> flights;
 
-    // Callback que define la acción a realizar cuando el usuario desea regresar a la vista anterior
+    /** Callback que define la acción a realizar cuando el usuario desea regresar a la vista anterior. */
     private Runnable goBackCallback;
 
     /**
      * Inicializa los datos necesarios para la vista del gráfico circular.
-     * Configura el gráfico con los datos de vuelos agrupados por destino,
-     * aplica la hoja de estilos CSS, y establece la acción de volver a la vista principal.
+     * Este método configura el gráfico con los datos de vuelos agrupados por destino,
+     * aplica la hoja de estilos CSS al nodo raíz y establece la acción de volver a la vista principal.
      *
-     * @param flights         Lista de vuelos que se mostrarán en el gráfico.
-     * @param stage           Stage principal donde se encuentra esta vista.
-     * @param goBackCallback  Acción que se ejecutará al presionar el botón de regreso.
+     * @param flights        Lista de vuelos que se mostrarán en el gráfico.
+     * @param stage          Stage principal donde se encuentra esta vista.
+     * @param goBackCallback Acción que se ejecutará al presionar el botón de regreso.
      */
     public void initializeData(ObservableList<Flight> flights, Stage stage, Runnable goBackCallback) {
         // Asigna los parámetros recibidos a las variables del controlador
