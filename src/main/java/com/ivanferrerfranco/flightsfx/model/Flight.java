@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Clase Flight que representa un vuelo con sus detalles.
+ * Clase que representa un vuelo con sus detalles.
  * Contiene información como el número de vuelo, destino,
  * fecha y hora de salida, y duración del vuelo.
  */

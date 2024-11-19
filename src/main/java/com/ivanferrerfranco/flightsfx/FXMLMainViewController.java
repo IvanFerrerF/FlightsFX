@@ -57,6 +57,15 @@ public class FXMLMainViewController {
     private Scene mainScene;
 
     /**
+     * Constructor de la clase FXMLMainViewController.
+     * Este constructor se utiliza para gestionar la vista principal de la interfaz de usuario.
+     * Se encarga de inicializar los componentes de la interfaz gráfica y de preparar el controlador para la interacción con el usuario.
+     */
+    public FXMLMainViewController() {
+        // Este constructor no realiza ninguna acción adicional, ya que la inicialización se maneja en el método initialize().
+    }
+
+    /**
      * Devuelve la lista completa de vuelos cargados.
      *
      * @return Lista de vuelos.
@@ -99,6 +108,8 @@ public class FXMLMainViewController {
 
     /**
      * Actualiza las opciones del filtro en el menú desplegable.
+     * Las opciones incluyen mostrar todos los vuelos, vuelos a la ciudad seleccionada,
+     * vuelos largos, próximos 5 vuelos y duración media de los vuelos.
      */
     private void updateChoiceBox() {
         ObservableList<String> filterOptions = FXCollections.observableArrayList(
@@ -114,7 +125,7 @@ public class FXMLMainViewController {
 
     /**
      * Agrega un vuelo a la tabla y al archivo.
-     * Valida los campos y muestra mensajes de error si hay problemas.
+     * Valida los campos de entrada y muestra un mensaje de error si alguno está vacío.
      */
     @FXML
     private void addFlight() {
@@ -125,11 +136,13 @@ public class FXMLMainViewController {
             String departureText = txtDeparture.getText().trim();
             String durationText = txtDuration.getText().trim();
 
+            // Comprobar si los campos están vacíos
             if (flightNumber.isEmpty() || destination.isEmpty() || departureText.isEmpty() || durationText.isEmpty()) {
                 MessageUtils.showError("Por favor, completa todos los campos.");
                 return;
             }
 
+            // Parsear los datos de fecha y duración
             LocalDateTime departure = LocalDateTime.parse(departureText, DateTimeFormatter.ofPattern("dd/MM/yy HH:mm"));
             LocalTime duration = LocalTime.parse(durationText, DateTimeFormatter.ofPattern("H:mm"));
 
@@ -139,24 +152,27 @@ public class FXMLMainViewController {
             FileUtils.saveFlights(flights);
             updateChoiceBox();
 
-            // Limpiar los campos
+            // Limpiar los campos de texto
             txtFlightNumber.clear();
             txtDestination.clear();
             txtDeparture.clear();
             txtDuration.clear();
 
+            // Mostrar mensaje de éxito
             MessageUtils.showMessage("Vuelo agregado exitosamente.");
         } catch (Exception e) {
+            // Mostrar error si ocurre algún problema al agregar el vuelo
             MessageUtils.showError("Error al agregar el vuelo: " + e.getMessage());
         }
     }
 
     /**
-     * Elimina el vuelo seleccionado de la tabla y del archivo.
+     * Elimina el vuelo seleccionado de la tabla y lo actualiza en el archivo.
      * Muestra un mensaje de error si no se selecciona ningún vuelo.
      */
     @FXML
     private void deleteFlight() {
+        // Obtener el vuelo seleccionado
         Flight selectedFlight = tableFlights.getSelectionModel().getSelectedItem();
         if (selectedFlight != null) {
             flights.remove(selectedFlight);
@@ -164,14 +180,15 @@ public class FXMLMainViewController {
             updateChoiceBox();
             MessageUtils.showMessage("Vuelo eliminado correctamente.");
         } else {
+            // Mostrar error si no se ha seleccionado un vuelo
             MessageUtils.showError("No se ha seleccionado ningún vuelo.");
         }
     }
 
     /**
      * Aplica el filtro seleccionado a la tabla de vuelos.
-     * Los filtros incluyen mostrar todos los vuelos, vuelos largos,
-     * próximos 5 vuelos y promedio de duración.
+     * Los filtros disponibles incluyen mostrar todos los vuelos, vuelos largos,
+     * próximos vuelos y la duración media de los vuelos.
      */
     @FXML
     private void applyFilter() {
@@ -223,6 +240,7 @@ public class FXMLMainViewController {
 
     /**
      * Muestra un gráfico circular con los datos de los vuelos agrupados por destino.
+     * Carga la vista del gráfico y permite regresar a la vista principal.
      */
     @FXML
     private void showChart() {
@@ -239,6 +257,7 @@ public class FXMLMainViewController {
 
     /**
      * Configura el Stage y la escena principal del controlador.
+     * Se utiliza para pasar el contexto de la ventana principal a este controlador.
      *
      * @param stage      Stage principal.
      * @param mainScene  Escena principal de la aplicación.

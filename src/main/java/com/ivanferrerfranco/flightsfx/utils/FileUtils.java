@@ -23,11 +23,20 @@ public class FileUtils {
     private static final String FILE_PATH = "flights.txt";
 
     /**
+     * Constructor de la clase FileUtils.
+     * Este constructor es utilizado para manejar la lectura y escritura de archivos relacionados con los vuelos.
+     * En esta clase no se requiere un constructor explícito, por lo que se utiliza el constructor predeterminado.
+     */
+    public FileUtils() {
+        // El constructor no realiza ninguna acción adicional
+    }
+
+    /**
      * Método para cargar una lista de vuelos desde un archivo de texto.
      * Cada línea del archivo debe estar en el formato: `FlightNumber;Destination;DepartureDateTime;Duration`.
      *
      * @return Una lista de objetos {@link Flight} cargados desde el archivo. Si el archivo no existe
-     * o no se puede leer, se devuelve una lista vacía.
+     *         o no se puede leer, se devuelve una lista vacía.
      */
     public static List<Flight> loadFlights() {
         // Lista para almacenar los vuelos cargados desde el archivo.

@@ -35,6 +35,14 @@ public class ChartViewController {
     private Runnable goBackCallback;
 
     /**
+     * Constructor vacío para la clase ChartViewController.
+     * Este constructor no realiza ninguna acción, pero se necesita para cumplir con la convención de tener un constructor sin parámetros.
+     */
+    public ChartViewController() {
+        // Constructor vacío
+    }
+
+    /**
      * Inicializa los datos necesarios para la vista del gráfico circular.
      * Este método configura el gráfico con los datos de vuelos agrupados por destino,
      * aplica la hoja de estilos CSS al nodo raíz y establece la acción de volver a la vista principal.

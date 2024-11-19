@@ -17,6 +17,16 @@ import java.io.IOException;
 public class FlightsFX extends Application {
 
     /**
+     * Constructor de la clase FlightsFX.
+     * Este constructor se usa para inicializar la aplicación JavaFX que maneja la ventana principal.
+     * <p>
+     * No realiza acciones adicionales, ya que la inicialización se realiza en el método {@code start}.
+     */
+    public FlightsFX() {
+        // Este constructor no realiza ninguna acción adicional
+    }
+
+    /**
      * Método de inicio de la aplicación de JavaFX.
      * <p>
      * Este método carga el archivo FXML principal, configura la escena y el {@link Stage},

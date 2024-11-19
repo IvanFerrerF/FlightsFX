@@ -11,6 +11,18 @@ import javafx.scene.control.Alert.AlertType;
 public class MessageUtils {
 
     /**
+     * Constructor vacío de la clase {@link MessageUtils}.
+     * <p>
+     * Este constructor vacío es necesario para crear una instancia de la clase,
+     * aunque no se utiliza en esta clase ya que los métodos son estáticos.
+     * <p>
+     * Este constructor es principalmente utilizado para cumplir con la convención de Javadoc.
+     */
+    public MessageUtils() {
+        // Constructor vacío. No se necesita ninguna implementación aquí.
+    }
+
+    /**
      * Muestra un mensaje de error al usuario.
      * Crea una alerta con tipo {@link Alert.AlertType#ERROR} y el texto proporcionado.
      *
